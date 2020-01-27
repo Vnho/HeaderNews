@@ -17,7 +17,7 @@
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>个人信息</el-dropdown-item>
             <el-dropdown-item>git地址</el-dropdown-item>
-            <el-dropdown-item>退出</el-dropdown-item>
+            <el-dropdown-item @click.native="logOut">退出</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </el-col>
@@ -53,7 +53,25 @@ export default {
 
   methods: {
     // 退出登录
-
+    logOut () {
+      this.$confirm('您将退出登录，是否继续？', '退出提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        window.localStorage.removeItem('user-token')
+        this.$router.push('/login')
+        this.$message({
+          type: 'success',
+          message: '退出登录成功'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消退出登录'
+        })
+      })
+    }
   }
 }
 </script>
