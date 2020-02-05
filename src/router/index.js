@@ -1,8 +1,9 @@
 import Vue from 'vue'
-import Login from '../views/login'
-import Layout from '../views/layout'
+import Login from '@/views/login'
+import Layout from '@/views/layout'
 import VueRouter from 'vue-router'
 import Nprogress from 'nprogress'
+import Article from '@/views/article'
 
 Vue.use(VueRouter)
 
@@ -24,7 +25,14 @@ const routes = [
   {
     path: '/layout',
     name: 'Layout',
-    component: Layout
+    component: Layout,
+    children: [
+      {
+        path: '/article',
+        name: 'Article',
+        component: Article
+      }
+    ]
   }
 
   // {
