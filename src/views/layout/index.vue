@@ -59,13 +59,12 @@
   </el-container>
 </template>
 
-<style lang="less">
+<style lang="less" scoped>
 .left_header {
  background-color: #323745;
  height: 100vh;
  overflow: hidden;
  .menu_title {
-  text-align: center;
   padding: 15px 0;
   background-color: #2e2f32;
   img {
