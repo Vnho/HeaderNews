@@ -75,7 +75,14 @@
           width 列宽
         表格列默认只能渲染普通文本，如果想要渲染点儿别的东西，需要自定义表格列。
       -->
-      <el-table :data="articleData" style="width: 100%">
+      <el-table
+        :data="articleData"
+        style="width: 100%"
+        v-loading="loading"
+        element-loading-text="加载数据中，请稍后。。。"
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.8)"
+      >
         <el-table-column prop="cover" label="封面" width="180">
           <!--
             自定义表格列
@@ -108,6 +115,7 @@
 
     <!-- 分页 -->
       <el-pagination
+        :disabled="loading"
         background=""
         layout="prev, pager, next"
         :total="totalContent"
@@ -164,7 +172,9 @@ export default {
           type: '',
           label: '全部'
         }
-      ]
+      ],
+      // 文章加载 loading 效果
+      loading: true
     }
   },
 
@@ -176,6 +186,7 @@ export default {
   methods: {
     // 加载文章列表
     loadArticles (page = 1) {
+      this.loading = true
       this.$axios({
         type: 'GET',
         url: '/articles',
@@ -191,6 +202,9 @@ export default {
         })
         .catch(err => {
           console.log(err, '获取数据失败')
+        })
+        .finally(() => {
+          this.loading = false
         })
     },
 
