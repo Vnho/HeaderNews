@@ -5,7 +5,7 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import './styles/style.less'
 import axios from 'axios'
-import Jsonbigint from 'json-bigint'
+import jsonBig from 'json-bigint'
 
 Vue.config.productionTip = false
 
@@ -25,8 +25,9 @@ axios.defaults.transformResponse = [function (data, headers) {
   // 但是它会处理其中超出安全整数范围的整数问题。
   // 严谨一点，如果 data 不是 json 格式字符串就会报错
   try {
-    return Jsonbigint.parse(data)
+    return jsonBig.parse(data)
   } catch (err) {
+    console.log('获取jsonBig数据失败', err)
     return {}
   }
 }]

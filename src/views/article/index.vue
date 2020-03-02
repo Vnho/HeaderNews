@@ -23,18 +23,18 @@
         <!-- 频道列表 -->
         <el-form-item label="频道列表">
           <el-select
-           v-model="ArticleForm.channel_id"
-           placeholder="请选择文章频道"
+            v-model="ArticleForm.channel_id"
+            placeholder="请选择文章频道"
           >
             <el-option
-             label="所有频道"
-             :value="null"
+              label="所有频道"
+              :value="null"
             ></el-option>
             <el-option
-             v-for="channel in channels"
-             :label="channel.name"
-             :key="channel.id"
-             :value="channel.id"
+              v-for="channel in channels"
+              :label="channel.name"
+              :key="channel.id"
+              :value="channel.id"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -42,17 +42,18 @@
         <el-form-item label="发布时间">
           <div class="block">
             <el-date-picker
-              v-model="ArticleForm.times"
+              v-model="rangeDate"
               type="daterange"
-              range-separator="至"
+              range-separator="——"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
+              value-format="yyyy-MM-dd"
             ></el-date-picker>
           </div>
         </el-form-item>
         <!-- 提交查询 -->
         <el-form-item>
-          <el-button type="primary" @click="onQuery">查询</el-button>
+          <el-button type="primary" @click="onQuery" round>查询</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -105,8 +106,8 @@
         </el-table-column>
         <el-table-column prop="pubdate" label="发布日期"></el-table-column>
         <el-table-column prop="address" label="操作">
-          <template>
-            <el-button type="danger" size="mini">删除</el-button>
+          <template slot-scope="scope">
+            <el-button type="danger" size="mini" @click="onDelete(scope.row.id)">删除</el-button>
             <el-button type="primary" size="mini">编辑</el-button>
           </template>
         </el-table-column>
@@ -116,7 +117,8 @@
     <!-- 分页 -->
       <el-pagination
         :disabled="loading"
-        background=""
+        background
+        :current-page="page"
         layout="prev, pager, next"
         :total="totalContent"
         class="paging"
@@ -133,19 +135,8 @@ export default {
       // 文章表单
       ArticleForm: {
         status: null, // 文章状态
-        channel_id: null, // 频道id
-        times: '', // 发布时间
-        begin_pubdata: '', // 开始的数据
-        end_pubdata: '' // 结束的数据
+        channel_id: null // 频道id
       },
-      // 搜索的日期范围
-      rangeDate: '',
-      // 文章展示列表
-      articleData: [],
-      // 文章总个数
-      totalContent: 0,
-      // 文章频道
-      channels: [],
       // 文章状态图标
       articleStasus: [
         {
@@ -173,8 +164,18 @@ export default {
           label: '全部'
         }
       ],
+      // 搜索的日期范围
+      rangeDate: [],
+      // 文章展示列表
+      articleData: [],
+      // 文章总个数
+      totalContent: 0,
+      // 文章频道
+      channels: [],
       // 文章加载 loading 效果
-      loading: true
+      loading: true,
+      // 文章初始页码
+      page: 0
     }
   },
 
@@ -193,7 +194,10 @@ export default {
         params: {
           page, // 页码
           per_page: 10, // 每页多少数据，后端默认按照每页十个数据
-          status: this.ArticleForm.status
+          status: this.ArticleForm.status, // 文章的状态
+          channel_id: this.ArticleForm.channel_id, // 文章频道的ID
+          begin_pubdate: this.rangeDate ? this.rangeDate[0] : null, // 开始的数据
+          end_pubdate: this.rangeDate ? this.rangeDate[1] : null // 结束的数据
         }
       })
         .then(res => {
@@ -213,13 +217,18 @@ export default {
       this.$axios({
         method: 'GET',
         url: '/channels'
-      }).then(res => {
-        this.channels = res.data.data.channels
       })
+        .then(res => {
+          this.channels = res.data.data.channels
+        })
+        .catch((err) => {
+          console.log(err, '获取频道列表失败')
+        })
     },
 
     // 换页操作
     onPageChange (page) {
+      this.page = page
       this.loadArticles(page)
     },
 
@@ -227,12 +236,26 @@ export default {
     onQuery () {
       this.loadArticles()
       this.page = 1
+    },
+
+    // 删除文章
+    onDelete (articleId) {
+      this.$axios({
+        method: 'DELETE',
+        url: `/articles/${articleId}`
+      })
+        .then(res => {
+          this.loadArticles(this.page)
+        })
+        .catch(err => {
+          console.log('删除文章失败', err)
+        })
     }
   }
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .search{
   margin: 20px 0;
 }

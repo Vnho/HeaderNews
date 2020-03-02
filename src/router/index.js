@@ -4,6 +4,7 @@ import Layout from '@/views/layout'
 import VueRouter from 'vue-router'
 import Nprogress from 'nprogress'
 import Article from '@/views/article'
+import Publish from '@/views/publish'
 
 Vue.use(VueRouter)
 
@@ -31,6 +32,11 @@ const routes = [
         path: '/article',
         name: 'Article',
         component: Article
+      },
+      {
+        path: '/publish',
+        name: 'Publish',
+        component: Publish
       }
     ]
   }
