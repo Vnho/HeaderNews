@@ -22,21 +22,7 @@
         </el-form-item>
         <!-- 频道列表 -->
         <el-form-item label="频道列表">
-          <el-select
-            v-model="ArticleForm.channel_id"
-            placeholder="请选择文章频道"
-          >
-            <el-option
-              label="所有频道"
-              :value="null"
-            ></el-option>
-            <el-option
-              v-for="channel in channels"
-              :label="channel.name"
-              :key="channel.id"
-              :value="channel.id"
-            ></el-option>
-          </el-select>
+          <channel-select v-model="ArticleForm.channel_id"></channel-select>
         </el-form-item>
         <!-- 发布时间 -->
         <el-form-item label="发布时间">
@@ -115,21 +101,28 @@
     </el-card>
 
     <!-- 分页 -->
-      <el-pagination
-        :disabled="loading"
-        background
-        :current-page="page"
-        layout="prev, pager, next"
-        :total="totalContent"
-        class="paging"
-        @current-change="onPageChange"
-      ></el-pagination>
+    <el-pagination
+      :disabled="loading"
+      background=""
+      :current-page="page"
+      layout="prev, pager, next"
+      :total="totalContent"
+      class="paging"
+      @current-change="onPageChange"
+    >
+    </el-pagination>
   </div>
 </template>
 
 <script>
+import channelSelect from '@/components/channel-select'
 export default {
   name: 'Article',
+
+  components: {
+    channelSelect
+  },
+
   data () {
     return {
       // 文章表单
@@ -170,8 +163,7 @@ export default {
       articleData: [],
       // 文章总个数
       totalContent: 0,
-      // 文章频道
-      channels: [],
+
       // 文章加载 loading 效果
       loading: true,
       // 文章初始页码
@@ -180,12 +172,11 @@ export default {
   },
 
   created () {
-    this.loadChannels()
     this.loadArticles()
   },
 
   methods: {
-    // 加载文章列表
+  // 加载文章列表
     loadArticles (page = 1) {
       this.loading = true
       this.$axios({
@@ -212,20 +203,6 @@ export default {
         })
     },
 
-    // 加载频道列表
-    loadChannels () {
-      this.$axios({
-        method: 'GET',
-        url: '/channels'
-      })
-        .then(res => {
-          this.channels = res.data.data.channels
-        })
-        .catch((err) => {
-          console.log(err, '获取频道列表失败')
-        })
-    },
-
     // 换页操作
     onPageChange (page) {
       this.page = page
@@ -246,9 +223,14 @@ export default {
       })
         .then(res => {
           this.loadArticles(this.page)
+          this.$message({
+            type: 'success',
+            message: '删除文章成功！'
+          })
         })
         .catch(err => {
           console.log('删除文章失败', err)
+          this.$message.error('删除文章失败！')
         })
     }
   }
@@ -256,10 +238,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.search{
-  margin: 20px 0;
+.search {
+ margin: 20px 0;
 }
-.paging{
-  text-align: center;
+.paging {
+ text-align: center;
 }
 </style>
