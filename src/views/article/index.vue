@@ -7,6 +7,7 @@
       <div slot="header" class="clearfix">
         <span>全部图文</span>
       </div>
+
       <!-- 表单查询 -->
       <el-form ref="ArticleManage" :model="ArticleForm" label-width="80px">
         <!-- 文章状态 -->
@@ -20,10 +21,12 @@
             <el-radio label="4">已删除</el-radio>
           </el-radio-group>
         </el-form-item>
+
         <!-- 频道列表 -->
         <el-form-item label="频道列表">
           <channel-select v-model="ArticleForm.channel_id"></channel-select>
         </el-form-item>
+
         <!-- 发布时间 -->
         <el-form-item label="发布时间">
           <div class="block">
@@ -37,12 +40,14 @@
             ></el-date-picker>
           </div>
         </el-form-item>
+
         <!-- 提交查询 -->
         <el-form-item>
           <el-button type="primary" @click="onQuery" round>查询</el-button>
         </el-form-item>
       </el-form>
     </el-card>
+
     <!-- 文章列表 -->
     <el-card class="box-card search">
       <div slot="header" class="clearfix">
@@ -94,7 +99,7 @@
         <el-table-column prop="address" label="操作">
           <template slot-scope="scope">
             <el-button type="danger" size="mini" @click="onDelete(scope.row.id)">删除</el-button>
-            <el-button type="primary" size="mini">编辑</el-button>
+            <el-button type="primary" size="mini" @click="$router.push(`/publish/${scope.row.id}`)">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>

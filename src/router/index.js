@@ -37,6 +37,11 @@ const routes = [
         path: '/publish',
         name: 'Publish',
         component: Publish
+      },
+      {
+        path: '/publish/:articleId',
+        name: 'updateArticle',
+        component: Publish
       }
     ]
   }

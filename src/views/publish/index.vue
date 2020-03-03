@@ -5,7 +5,7 @@
 
       <!-- 表头 -->
       <div slot="header" class="clearfix">
-        <span>发布文章</span>
+        <span>{{this.$route.params.articleId?'编辑文章':'发布文章'}}</span>
       </div>
 
       <!-- 表单内容 -->
@@ -85,7 +85,9 @@ export default {
   },
 
   created () {
-    this.loadChannel()
+    if (this.$route.params.articleId) {
+      this.loadArticles()
+    }
   },
 
   methods: {
@@ -109,6 +111,18 @@ export default {
         .catch(err => {
           this.$message.error('发表文章失败！')
           console.log(err)
+        })
+    },
+
+    // 编辑文章
+    // 加载文章
+    loadArticles () {
+      this.$axios({
+        method: 'GET',
+        url: `/articles/${this.$route.params.articleId}`
+      })
+        .then(res => {
+          this.publishForm = res.data.data
         })
     }
   }
