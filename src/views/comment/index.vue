@@ -4,10 +4,10 @@
     <el-card class="box-card">
       <!-- 标题 -->
       <div slot="header" class="clearfix">
-        <span>评论管理</span>
+        <span>评论列表</span>
       </div>
       <!-- 表格表单 -->
-      <el-table :data="commentData" style="width: 100%">
+      <el-table :data="commentData" style="width: 100%;" header-align="center">
         <!-- 标题 -->
         <el-table-column
          prop="title"
@@ -44,12 +44,16 @@
         <el-table-column
          prop="address"
          label="操作">
-          <el-button
+         <template slot-scope="scope">
+           <el-button
            type="primary"
            round
            size="mini"
            icon="el-icon-s-tools"
+           @click="onTop(scope.row)"
            >修改</el-button>
+         </template>
+
         </el-table-column>
       </el-table>
 
@@ -114,15 +118,32 @@ export default {
         }
       })
         .then(res => {
-          this.$message({
-            type: 'success',
-            message: '状态修改成功！'
-          })
+          if (commentStatus.comment_status) {
+            this.$message({
+              type: 'success',
+              message: `状态修改为可见`
+            })
+          } else {
+            this.$message({
+              message: '状态修改为不可见',
+              type: 'warning'
+            })
+          }
         })
         .catch(err => {
           console.log(err)
           this.$message.error('状态修改失败！')
         })
+    },
+
+    // 是否置顶
+    onTop (isTop) {
+      console.log(isTop)
+      this.$axios({
+        method: 'PUT',
+        url: `/comments/${isTop.id}/sticky`
+
+      })
     }
   }
 }
