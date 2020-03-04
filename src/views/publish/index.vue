@@ -2,19 +2,16 @@
   <div class="publish">
     <!-- 发布文章区域 -->
     <el-card class="box-card">
-
       <!-- 表头 -->
       <div slot="header" class="clearfix">
         <span>{{this.$route.params.articleId?'编辑文章':'发布文章'}}</span>
       </div>
-
       <!-- 表单内容 -->
       <el-form ref="publishForm" :model="publishForm" label-width="80px">
         <!-- 文章标题 -->
         <el-form-item label="文章标题">
           <el-input v-model="publishForm.title"></el-input>
         </el-form-item>
-
         <!-- 文章内容 -->
         <el-form-item label="文章内容">
           <!-- 富文本编辑器 -->
@@ -25,12 +22,10 @@
             :options="editorOption"
           ></quill-editor>
         </el-form-item>
-
         <!-- 文章频道 -->
         <el-form-item label="文章频道">
           <channel-select v-model="publishForm.channel_id" :notAll="false"></channel-select>
         </el-form-item>
-
         <!-- 文章封面 -->
         <el-form-item label="文章封面">
           <el-radio-group v-model="publishForm.cover.type">
@@ -40,7 +35,6 @@
             <el-radio :label="-1">自动</el-radio>
           </el-radio-group>
         </el-form-item>
-
         <!-- 提交按钮 -->
         <el-form-item>
           <el-button type="primary" @click="onSubmit(false)">提交</el-button>
@@ -91,8 +85,17 @@ export default {
   },
 
   methods: {
-    // 发布文章
+  // 提交按钮的操作
     onSubmit (draft) {
+      if (this.$route.params.articleId) {
+        this.updataArticle(draft)
+      } else {
+        this.publishArticle(draft)
+      }
+    },
+
+    // 发布文章
+    publishArticle (draft) {
       this.$axios({
         method: 'POST',
         url: '/articles',
@@ -114,7 +117,6 @@ export default {
         })
     },
 
-    // 编辑文章
     // 加载文章
     loadArticles () {
       this.$axios({
@@ -123,6 +125,32 @@ export default {
       })
         .then(res => {
           this.publishForm = res.data.data
+        })
+        .catch(err => {
+          console.log('获取文章信息失败！', err)
+        })
+    },
+
+    // 编辑文章
+    updataArticle (draft) {
+      this.$axios({
+        method: 'PUT',
+        url: `/articles/${this.$route.params.articleId}`,
+        query: {
+          draft
+        },
+        data: this.publishForm
+      })
+        .then(res => {
+          this.$message({
+            type: 'success',
+            message: '文章修改成功啦！'
+          })
+          this.$router.push('/article')
+        })
+        .catch(err => {
+          console.log(err)
+          this.$message.error('修改文章失败了！')
         })
     }
   }
