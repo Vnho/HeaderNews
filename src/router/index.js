@@ -6,6 +6,7 @@ import Nprogress from 'nprogress'
 import Article from '@/views/article'
 import Publish from '@/views/publish'
 import Comment from '@/views/comment'
+import CommentDetail from '@/views/comment-detail'
 
 Vue.use(VueRouter)
 
@@ -29,25 +30,40 @@ const routes = [
     name: 'Layout',
     component: Layout,
     children: [
+      // 文章列表
       {
         path: '/article',
         name: 'Article',
         component: Article
       },
+
+      // 发布文章
       {
         path: '/publish',
         name: 'Publish',
         component: Publish
       },
+
+      // 修改文章
       {
         path: '/publish/:articleId',
         name: 'updateArticle',
         component: Publish
       },
+
+      // 评论列表
       {
         path: '/comment',
         name: 'Comment',
         component: Comment
+      },
+
+      // 评论管理
+      {
+        path: '/comment/:commentId',
+        name: 'CommentDetail',
+        props: true,
+        component: CommentDetail
       }
     ]
   }

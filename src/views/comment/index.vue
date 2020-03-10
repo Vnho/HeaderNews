@@ -50,10 +50,9 @@
            round
            size="mini"
            icon="el-icon-s-tools"
-           @click="onTop(scope.row)"
+           @click="$router.push(`/comment/${scope.row.id}`)"
            >修改</el-button>
          </template>
-
         </el-table-column>
       </el-table>
 
@@ -134,16 +133,6 @@ export default {
           console.log(err)
           this.$message.error('状态修改失败！')
         })
-    },
-
-    // 是否置顶
-    onTop (isTop) {
-      console.log(isTop)
-      this.$axios({
-        method: 'PUT',
-        url: `/comments/${isTop.id}/sticky`
-
-      })
     }
   }
 }
