@@ -99,7 +99,7 @@ export default {
       this.$axios({
         method: 'POST',
         url: '/articles',
-        props: {
+        params: {
           draft
         },
         data: this.publishForm
@@ -136,7 +136,7 @@ export default {
       this.$axios({
         method: 'PUT',
         url: `/articles/${this.$route.params.articleId}`,
-        query: {
+        params: {
           draft
         },
         data: this.publishForm

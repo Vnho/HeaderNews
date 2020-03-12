@@ -238,6 +238,7 @@ export default {
             type: 'success',
             message: '删除文章成功！'
           })
+          this.loadArticles()
         })
         .catch(err => {
           console.log('删除文章失败', err)

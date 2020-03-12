@@ -7,6 +7,7 @@ import Article from '@/views/article'
 import Publish from '@/views/publish'
 import Comment from '@/views/comment'
 import CommentDetail from '@/views/comment-detail'
+import Material from '@/views/material'
 
 Vue.use(VueRouter)
 
@@ -64,6 +65,13 @@ const routes = [
         name: 'CommentDetail',
         props: true,
         component: CommentDetail
+      },
+
+      // 素材管理
+      {
+        path: '/material',
+        name: 'Material',
+        component: Material
       }
     ]
   }
