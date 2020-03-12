@@ -8,6 +8,7 @@ import Publish from '@/views/publish'
 import Comment from '@/views/comment'
 import CommentDetail from '@/views/comment-detail'
 import Material from '@/views/material'
+import Account from '@/views/account'
 
 Vue.use(VueRouter)
 
@@ -72,6 +73,13 @@ const routes = [
         path: '/material',
         name: 'Material',
         component: Material
+      },
+
+      // 账户信息
+      {
+        path: '/account',
+        name: 'Account',
+        component: Account
       }
     ]
   }

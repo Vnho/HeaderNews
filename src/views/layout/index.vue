@@ -40,7 +40,7 @@
             <el-menu-item index="2-4">粉丝自述</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
-        <el-menu-item index="4">
+        <el-menu-item index="/account">
           <span slot="title">账户信息</span>
         </el-menu-item>
       </el-menu>
