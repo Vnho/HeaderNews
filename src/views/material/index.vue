@@ -4,8 +4,31 @@
       <!-- 上传图片 -->
       <div slot="header" class="clearfix">
         <span>素材管理</span>
-        <el-button type="primary" style="float:right;">点击上传</el-button>
+
+        <!-- 自己封装的上传图标 -->
+        <el-button
+          type="primary"
+          icon="el-icon-message"
+          circle
+          style="float:right"
+          @click="onUpImage"
+        ></el-button>
+        <input type="file" hidden ref="upImage" @change="onImageChange">
+
+        <!-- 上传图片 -->
+        <el-upload
+          class="upload-demo"
+          style="float:right"
+          action="http://ttapi.research.itcast.cn/mp/v1_0/user/images"
+          :headers="uploadHeaders"
+          name="image"
+          :show-file-list="false"
+          :on-success="uploadSuccess"
+        >
+          <el-button size="small" type="primary">点击上传</el-button>
+        </el-upload>
       </div>
+
       <!-- 素材种类 -->
       <div>
         <el-radio-group v-model="orCollect" @change="onFind">
@@ -13,6 +36,7 @@
           <el-radio-button label="true">收藏</el-radio-button>
         </el-radio-group>
       </div>
+
       <!-- 素材内容 -->
       <el-row :gutter="20" style="margin-top:20px">
         <el-col
@@ -28,6 +52,7 @@
             <!-- 素材内容 -->
             <el-image :src="image.url" class="image" lazy fit="cover" style="height:150px"></el-image>
             <!-- 操作 -->
+
             <div style="padding: 14px;">
               <div class="bottom clearfix">
                 <!-- 收藏素材 -->
@@ -36,6 +61,7 @@
                   style="font-size:26px;color:skyblue;cursor:pointer"
                   @click="onCollect(image)"
                 ></i>
+
                 <!-- 删除素材 -->
                 <i
                   class="el-icon-delete"
@@ -47,6 +73,7 @@
           </el-card>
         </el-col>
       </el-row>
+
       <!-- 分页按钮 -->
       <el-pagination
         style="text-align:center"
@@ -62,6 +89,7 @@
 
 <script>
 export default {
+  // 组件名称
   name: 'Material',
 
   data () {
@@ -69,7 +97,11 @@ export default {
       orCollect: false, // 当前所在频道
       totalCount: 0, // 总共素材数
       images: [], // 素材内容
-      nowPage: 0 // 当前所在页数
+      nowPage: 0, // 当前所在页数
+      nowChannel: null, // 当前所在频道
+      uploadHeaders: {
+        Authorization: `Bearer ${window.localStorage.getItem('user-token')}`
+      } // 上传图片的请求头
     }
   },
 
@@ -97,6 +129,7 @@ export default {
     // 切换全部或收藏
     onFind (value) {
       this.loadMaterial(value)
+      this.nowChannel = value
     },
 
     // 换页操作
@@ -158,6 +191,40 @@ export default {
             type: 'info',
             message: '已取消删除'
           })
+        })
+    },
+
+    // 上传素材
+    uploadSuccess () {
+      this.$message.success('上传图片成功!')
+      this.loadMaterial()
+    },
+
+    // 自己封装的上传图标
+    // 1.建立DOM操作链接
+    onUpImage () {
+      this.$refs.upImage.click()
+      console.log(this.$refs.upImage.files[0])
+    },
+    onImageChange () {
+      // 2.创建一个对象来接收传入的文件的值
+      const objImage = this.$refs.upImage.files[0]
+      // 3.创建一个新的表单对象
+      const formData = new FormData()
+      // 4.手动往表单数据中添加成员
+      formData.append('image', objImage)
+      // 5.发送axios请求
+      this.$axios({
+        method: 'POST',
+        url: '/user/images',
+        data: formData
+      })
+        .then(() => {
+          this.$message.success('上传成功!')
+          this.loadMaterial()
+        })
+        .catch(() => {
+          this.$message.waring('上传失败!请检查网络连接!')
         })
     }
   }
