@@ -24,7 +24,7 @@
 
         <!-- 手机号 -->
         <el-form-item label="手机号">
-          <el-input disabled="true" v-model="userForm.mobile"></el-input>
+          <el-input :disabled="true" v-model="userForm.mobile"></el-input>
         </el-form-item>
 
         <!-- 邮箱地址 -->
@@ -33,7 +33,7 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary">保存修改</el-button>
+          <el-button type="primary" @click="onKeep">保存修改</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -57,6 +57,7 @@ export default {
   },
 
   methods: {
+    // 加载用户信息
     loadAccount () {
       this.$axios({
         method: 'GET',
@@ -64,6 +65,25 @@ export default {
       })
         .then(res => {
           this.userForm = res.data.data
+        })
+    },
+
+    // 提交修改信息
+    onKeep () {
+      this.$axios({
+        method: 'PATCH',
+        url: '/user/profile',
+        data: {
+          name: this.userForm.name,
+          intro: this.userForm.intro,
+          email: this.userForm.email
+        }
+      })
+        .then(res => {
+          this.$message.success('修改成功!')
+        })
+        .catch(() => {
+          this.$message.waring('修改失败!请检查网络设置')
         })
     }
   }
