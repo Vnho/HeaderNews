@@ -204,7 +204,6 @@ export default {
     // 1.建立DOM操作链接
     onUpImage () {
       this.$refs.upImage.click()
-      console.log(this.$refs.upImage.files[0])
     },
     onImageChange () {
       // 2.创建一个对象来接收传入的文件的值

@@ -9,9 +9,9 @@
       </el-col>
       <!-- 右侧 -->
       <el-col :span="4" class="right">
-        <img src="../assets/img/avatar.jpg" alt="" class="user_img">
+        <img :src="userMessage.photo" width="50" height="50" alt="" class="user_img">
         <el-dropdown trigger="click">
-          <span class="el-dropdown-link">下拉菜单
+          <span class="el-dropdown-link">{{userMessage.name}}
             <i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
@@ -25,30 +25,27 @@
   </div>
 </template>
 
-<style lang="less" scoped>
-.left {
- display: flex;
- align-items: center;
- i {
-  font-size: 24px;
- }
-}
-.right {
- display: flex;
- align-items: center;
- .user_img {
-  border-radius: 50%;
-  margin-right: 10px;
- }
-}
-</style>
-
 <script>
+import eventBus from '@/utils/event-bus.js'
+
 export default {
+  name: 'LayoutHeader',
+
   data () {
     return {
-
+      userMessage: {} // 用户信息
     }
+  },
+
+  created () {
+    // 加载用户信息
+    this.loadUser()
+
+    // 事件监听
+    eventBus.$on('update-user', user => {
+      this.userMessage.name = user.name
+      this.userMessage.photo = user.photo
+    })
   },
 
   methods: {
@@ -71,7 +68,36 @@ export default {
           message: '已取消退出登录'
         })
       })
+    },
+
+    // 获取用户信息
+    loadUser () {
+      this.$axios({
+        method: 'GET',
+        url: '/user/profile'
+      })
+        .then((res) => {
+          this.userMessage = res.data.data
+        })
     }
   }
 }
 </script>
+
+<style lang="less" scoped>
+.left {
+ display: flex;
+ align-items: center;
+ i {
+  font-size: 24px;
+ }
+}
+.right {
+ display: flex;
+ align-items: center;
+ .user_img {
+  border-radius: 50%;
+  margin-right: 10px;
+ }
+}
+</style>
