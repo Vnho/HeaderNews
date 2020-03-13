@@ -42,8 +42,8 @@
           <!-- 图片上传 -->
           <template v-if="publishForm.cover.type > 0">
             <el-row :gutter="20">
-              <el-col :span="4" v-for="item in publishForm.cover.type" :key="item">
-                <UploadImages></UploadImages>
+              <el-col :span="4" v-for="(item,index) in publishForm.cover.type" :key="item">
+                <UploadImages v-model="publishForm.cover.images[index]"></UploadImages>
               </el-col>
             </el-row>
           </template>

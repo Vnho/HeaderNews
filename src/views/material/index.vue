@@ -110,7 +110,7 @@ export default {
   },
 
   methods: {
-  // 加载素材列表
+    // 加载素材列表
     loadMaterial (isCollect = false, page) {
       this.$axios({
         method: 'GET',
